@@ -1,7 +1,7 @@
 # MakerFaire SG 2017 - Animated Tweets
 
 ## Requirements
-- PHP >= 7.0.7
+- PHP >= 7.0
 - [Composer](https://getcomposer.org/)
 - [Yarn](https://yarnpkg.com/)
 
