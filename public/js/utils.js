@@ -6,20 +6,23 @@ var utils = (function () {
     // Self reference - all public vars/methods will be stored in here and returned as public interface
     var self = {};
 
+    var endpointUrl = 'app/';
+
     /**
      * Get tweets
      *
-     * @param  string endpoint
-     * @param  object requestParams
+     * @param  string lastIdStr id_str of last tweet
      * @param  callable responseCallback Takes in (isSuccess, statusCode, responseData) and returns void
      * @return void
      */
-    self.getTweets = function (endpointUrl, responseCallback) {
+    self.getTweets = function (lastIdStr, responseCallback) {
         $.ajax({
             type: 'GET',
             dataType: 'json',
             url: endpointUrl,
-            data: []
+            data: {
+                last_id_str: lastIdStr
+            }
         }).done(function (data, textStatus, jqXHR) {
             var isSuccess = true,
                 statusCode = jqXHR.status,
