@@ -9,6 +9,9 @@
 
     <!-- Title -->
     <title>MakerFaire SG 2017</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="node_modules/animate.css/animate.min.css">
   </head>
 
   <body>
@@ -17,17 +20,49 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="public/js/utils.js"></script>
     <script>
+      var tweets = []; // growing list of tweets
+      var lastIdStr = ''; // keep track of id_str of latest tweet
+      var getTweets = function () {
+          utils.getTweets(lastIdStr, function (isSuccess, statusCode, responseData) {
+              lastIdStr = responseData.last_id_str;
+              tweets = tweets.concat(responseData.tweets);
+          });
+      };
+
+      // Make 1st call and get tweets every 10s (10000ms)
+      getTweets();
+      var getTweetsInterval = window.setInterval('getTweets()', 10000);
+
       var $canvas = $('#canvas');
+      var animateClass = 'animated bounce';
+      var currTweetIndex = 0;
+      var tweetCnt;
+      var currTweet;
+      var animateTweet = function () {
+          tweetCnt = tweets.length;
 
-      utils.getTweets('app/', function (isSuccess, statusCode, responseData) {
-         var html = '';
+          if (currTweetIndex > tweetCnt - 1) {
+              currTweetIndex = 0;
+          }
 
-         responseData.forEach(function (element, index, array) {
-           html += element + '<br>';
-         });
+          currTweet = tweets[currTweetIndex] || null;
+          currTweetIndex++;
+          if (null == currTweet) {
+              return false;
+          }
 
-         $canvas.html(html);
-      });
+          // Animate
+          $canvas.removeClass().html(currTweet).addClass(animateClass)
+              .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                  $(this).removeClass();
+              });
+      };
+
+      // Make 1st call and animate a tweet every 2s (2000ms)
+      animateTweet();
+      var animateTweetInterval = window.setInterval('animateTweet()', 2000);
     </script>
+
+
   </body>
 </html>
