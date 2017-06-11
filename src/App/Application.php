@@ -75,13 +75,25 @@ class Application
         $tweets = array_values($tweets);
 
         // Return JSON response
-        $response = json_encode([
+        return $this->response([
             'last_id_str' => $lastIdStr,
             'tweets' => $tweets,
         ]);
+    }
+
+    /**
+     * Return JSON response
+     *
+     * @param  array $data
+     * @return void
+     */
+    protected function response(array $data, $responseCode = 200)
+    {
+        $response = json_encode($data);
         header_remove();
-        http_response_code(200);
+        http_response_code($responseCode);
         header('Content-Type: application/json; charset=utf8');
         echo $response;
+        exit;
     }
 }
