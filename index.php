@@ -1,3 +1,4 @@
+<?php $config = include 'config/config.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,6 +21,7 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="public/js/utils.js"></script>
     <script>
+      var endpointUrl = '<?php echo $config['endpoint_url']; ?>';
       var tweets = []; // growing list of tweets
       var lastIdStr = ''; // keep track of id_str of latest tweet
       var getTweets = function () {
@@ -56,6 +58,9 @@
               .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
                   $(this).removeClass();
               });
+
+          // Send tweet to endpoint
+          utils.sendTweet(endpointUrl, currTweet, function (isSuccess, statusCode, responseData) {});
       };
 
       // Make 1st call and animate a tweet every 2s (2000ms)
