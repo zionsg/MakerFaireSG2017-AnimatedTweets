@@ -90,10 +90,16 @@ class Application
         $result = $twitter->setGetfield($queryString)
             ->buildOauth($this->url, $this->method)
             ->performRequest();
+        $data = json_decode($result, true);
+
+        // Exit if errors, e.g. rate limit exceeded
+        if (isset($data['errors'])) {
+            var_dump($data['errors']);
+            return;
+        }
 
         // Process
         $tweets = [];
-        $data = json_decode($result, true);
         foreach (($data['statuses'] ?? []) as $tweet) {
             $idStr = $tweet['id_str'] ?? '';
             $text = $tweet['text'] ?? '';
