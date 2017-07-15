@@ -94,9 +94,9 @@ class Application
         // Process
         $tweets = [];
         $data = json_decode($result, true);
-        foreach ($data['statuses'] as $tweet) {
-            $idStr = $tweet['id_str'];
-            $text = $tweet['text'];
+        foreach (($data['statuses'] ?? []) as $tweet) {
+            $idStr = $tweet['id_str'] ?? '';
+            $text = $tweet['text'] ?? '';
             if (preg_match($this->censoredWordsRegex, $text)) {
                 continue;
             }
