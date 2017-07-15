@@ -21,6 +21,6 @@ return [
     // Endpoint to send tweet to
     'endpoint_url' => 'http://127.0.0.1:3000',
 
-    // Delay between sending of each tweet
-    'delay_seconds' => 2,
+    // Delay between each call to Twitter API (rate limit of 180 calls per 15 mins) plus sending of tweets
+    'delay_seconds' => 10,
 ];

@@ -14,5 +14,5 @@ return [
 
     'endpoint_url' => 'http://127.0.0.1:3000',
 
-    'delay_seconds' => 2,
+    'delay_seconds' => 10,
 ];
