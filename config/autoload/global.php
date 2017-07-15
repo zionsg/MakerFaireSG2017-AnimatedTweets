@@ -1,6 +1,7 @@
 <?php
 
 return [
+    // Twitter API settings
     'twitter' => [
         'settings' => [
             'oauth_access_token' => 'YOUR_OAUTH_ACCESS_TOKEN',
@@ -14,7 +15,12 @@ return [
         'method' => 'GET',
     ],
 
+    // List of words to censor
     'censored_words' => [],
 
+    // Endpoint to send tweet to
     'endpoint_url' => 'http://127.0.0.1:3000',
+
+    // Delay between sending of each tweet
+    'delay_seconds' => 2,
 ];

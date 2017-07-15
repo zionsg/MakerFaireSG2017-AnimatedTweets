@@ -3,12 +3,10 @@
 ## Requirements
 - PHP >= 7.0
 - [Composer](https://getcomposer.org/)
-- [Yarn](https://yarnpkg.com/)
 
 ## Installation
 - Clone this repo.
 - Run `composer install` to install PHP dependencies.
-- Run `yarn install` to install client-side dependencies such as Javascript and CSS libraries.
 - Copy `config/autoload/credentials.local.php.dist` to `config/autoload/credentials.local.php` and update values accordingly.
 - Copy `config/autoload/local.php.dist` to `config/autoload/local.php` and update values accordingly.
-- Run `index.html` in browser. To debug, check console output in browser.
+- Run `nohup php ./app/index.php &` in terminal. `nohup` ensures that the script continues to run after you exit the shell. The `&` will run it in the background and return the user to the prompt. Output and errors will be sent to `nohup.out` in the same directory.

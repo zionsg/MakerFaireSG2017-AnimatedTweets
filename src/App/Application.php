@@ -12,6 +12,11 @@ class Application
     protected $query;
     protected $method;
     protected $censoredWordsRegex;
+    protected $endpointUrl;
+    protected $delaySeconds;
+
+    protected $lastIdStr = '';
+    protected $tweets = [];
 
     public function __construct(array $config)
     {
@@ -24,6 +29,40 @@ class Application
 
         $censoredWords = implode('|', $config['censored_words']);
         $this->censoredWordsRegex = "/(${censoredWords})/i";
+
+        $this->endpointUrl = $config['endpoint_url'];
+        $this->delaySeconds = $config['delay_seconds'];
+    }
+
+    /**
+     * Run continuously - get tweets, send to endpoint url
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $currTweetIndex = 0;
+
+        echo "Tweets will be sent to {$this->endpointUrl} every {$this->delaySeconds} seconds.\n\n";
+        while (true) {
+            // Get tweets
+            $this->getTweets();
+            $tweetCnt = count($this->tweets);
+
+            // Get current tweet
+            $currTweet = $this->tweets[$currTweetIndex] ?? null;
+            $currTweetIndex++;
+            if (null === $currTweet) {
+                continue;
+            }
+
+            // Send tweet to endpoint
+            $this->call($this->endpointUrl, ['tweet' => $currTweet]);
+            echo "{$currTweet}\n\n";
+
+            // Delay
+            @shell_exec("sleep {$this->delaySeconds}");
+        }
     }
 
     /**
@@ -33,19 +72,12 @@ class Application
      * Using id_str instead of id cos integer id may be too big for PHP to handle properly.
      *
      * @link   https://dev.twitter.com/rest/reference/get/search/tweets
-     * @return string JSON-encoded string
-     *     {
-     *         "last_id_str": "456",
-     *         "tweets": [
-     *             {"id_str":"123", "text": "Hello"},
-     *             {"id_str":"456", "text": "World"}
-     *         ]
-     *     }
+     * @return void
      */
-    public function run()
+    public function getTweets()
     {
-        // Get request param & add to query string
-        $lastIdStr = isset($_GET['last_id_str']) ? $_GET['last_id_str'] : '';
+        // Construct query string
+        $lastIdStr = $this->lastIdStr;
         $queryString = sprintf(
             '%s&q=%s&since_id=%s',
             $this->queryString,
@@ -73,28 +105,47 @@ class Application
             $tweets[$idStr] = $text;
         }
         ksort($tweets); // oldest to newest
-        $tweets = array_values($tweets);
 
-        // Return JSON response
-        return $this->response([
-            'last_id_str' => $lastIdStr,
-            'tweets' => $tweets,
-        ]);
+        // Update class vars
+        $this->lastIdStr = $lastIdStr;
+        foreach ($tweets as $idStr => $tweet) {
+            $this->tweets[] = $tweet;
+        }
     }
 
     /**
-     * Return JSON response
+     * Send cURL request to external API
      *
+     * @param  string $url
      * @param  array $data
-     * @return void
+     * @return array ['code' => <HTTP response code>, 'response' => <response data>]
      */
-    protected function response(array $data, $responseCode = 200)
+    protected function call($url, array $data)
     {
-        $response = json_encode($data);
-        header_remove();
-        http_response_code($responseCode);
-        header('Content-Type: application/json; charset=utf8');
-        echo $response;
-        exit;
+        if (! $url) {
+            return [
+                'code' => null,
+                'response' => null,
+            ];
+        }
+
+        $curlHandler = curl_init();
+        curl_setopt_array($curlHandler, [
+            CURLOPT_RETURNTRANSFER => true, // return value instead of output to browser
+            CURLOPT_HEADER => false, // do not include headers in return value
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json; charset=utf-8'],
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($data),
+        ]);
+        $apiResponse = curl_exec($curlHandler);
+        $curlInfo = curl_getinfo($curlHandler);
+        $apiCode = $curlInfo['http_code'];
+        curl_close($curlHandler);
+
+        return [
+            'code' => $apiCode,
+            'response' => $apiResponse,
+        ];
     }
 }
