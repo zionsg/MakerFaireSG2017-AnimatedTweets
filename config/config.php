@@ -13,7 +13,7 @@ $config = [];
 
 $globPath = 'config/autoload/{{,*.}global,{,*.}local}.php';
 foreach (glob($globPath, GLOB_BRACE) as $file) {
-    $config = array_merge($config, include $file);
+    $config = array_replace_recursive($config, include $file);
 }
 
 return $config;

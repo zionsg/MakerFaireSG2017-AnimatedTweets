@@ -15,11 +15,12 @@ class Application
 
     public function __construct(array $config)
     {
-        $this->settings = $config['settings'];
-        $this->url = $config['url'];
-        $this->queryString = $config['query_string'];
-        $this->query = urlencode($config['query']);
-        $this->method = $config['method'];
+        $twitterConfig = $config['twitter'];
+        $this->settings = $twitterConfig['settings'];
+        $this->url = $twitterConfig['url'];
+        $this->queryString = $twitterConfig['query_string'];
+        $this->query = urlencode($twitterConfig['query']);
+        $this->method = $twitterConfig['method'];
 
         $censoredWords = implode('|', $config['censored_words']);
         $this->censoredWordsRegex = "/(${censoredWords})/i";
