@@ -52,13 +52,11 @@ class Application
             // Get current tweet
             $currTweet = $this->tweets[$currTweetIndex] ?? null;
             $currTweetIndex++;
-            if (null === $currTweet) {
-                continue;
+            if ($currTweet) {
+                // Send tweet to endpoint
+                $this->call($this->endpointUrl, ['tweet' => $currTweet]);
+                echo "{$currTweet}\n\n";
             }
-
-            // Send tweet to endpoint
-            $this->call($this->endpointUrl, ['tweet' => $currTweet]);
-            echo "{$currTweet}\n\n";
 
             // Delay
             @shell_exec("sleep {$this->delaySeconds}");
