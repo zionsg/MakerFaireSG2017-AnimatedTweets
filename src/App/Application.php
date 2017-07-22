@@ -51,11 +51,12 @@ class Application
 
             // Get current tweet
             $currTweet = $this->tweets[$currTweetIndex] ?? null;
-            $currTweetIndex++;
             if ($currTweet) {
+                $currTweetIndex++; // increment else stay at current value till there's a new tweet
+
                 // Send tweet to endpoint
-                $this->call($this->endpointUrl, ['tweet' => $currTweet]);
-                echo "{$currTweet}\n\n";
+                $result = $this->call($this->endpointUrl, ['tweet' => $currTweet]);
+                printf("{%s} %s %s\n\n", $currTweet, date('c'), $result['code']);
             }
 
             // Delay
