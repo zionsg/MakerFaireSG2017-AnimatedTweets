@@ -1,5 +1,7 @@
 # MakerFaire SG 2017 - Animated Tweets
 
+This web app is used to pull tweets from Twitter for a specific hashtag and post them to the Interactive Wall via a [NodeJS server](https://github.com/zionsg/MakerFaireSG2017-SwipeToSend/blob/master/server.js).
+
 ## Requirements
 - PHP >= 7.0
 - [Composer](https://getcomposer.org/)
