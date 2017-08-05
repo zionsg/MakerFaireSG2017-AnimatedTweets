@@ -12,6 +12,7 @@ This web app is used to pull tweets from Twitter for a specific hashtag and post
 - Copy `config/autoload/credentials.local.php.dist` to `config/autoload/credentials.local.php` and update values accordingly.
 - Copy `config/autoload/local.php.dist` to `config/autoload/local.php` and update values accordingly.
 - Run `nohup php ./app/index.php &` in terminal. `nohup` ensures that the script continues to run after you exit the shell. The `&` will run it in the background and return the user to the prompt. Output and errors will be sent to `nohup.out` in the same directory.
+- If any of the files are modified, the above process must be killed first and run again for the changes to take effect.
 
 ## Troubleshooting
 - In the event that `composer install` fails due to certain PHP extensions missing, the following commands can be run:
