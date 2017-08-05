@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Throwable;
 use TwitterAPIExchange;
 
 class Application
@@ -86,10 +87,14 @@ class Application
 
         // Call Twitter API
         $twitter = new TwitterAPIExchange($this->settings);
-        $result = $twitter->setGetfield($queryString)
-            ->buildOauth($this->url, $this->method)
-            ->performRequest();
-        $data = json_decode($result, true);
+        try {
+            $result = $twitter->setGetfield($queryString)
+                ->buildOauth($this->url, $this->method)
+                ->performRequest();
+            $data = json_decode($result, true);
+        } catch (Throwable $t) {
+            $data['errors'] = $t->getMessage();
+        }
 
         // Exit if errors, e.g. rate limit exceeded
         if (isset($data['errors'])) {
