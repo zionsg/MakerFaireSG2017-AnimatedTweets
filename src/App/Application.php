@@ -58,6 +58,8 @@ class Application
                 printf("#%d {%s} %s %s\n\n", $currTweetIndex, $currTweet, date('c'), $result['code']);
 
                 $currTweetIndex++; // increment else stay at current value till there's a new tweet
+            } else {
+                printf("No new tweets - currTweetIndex %d, %s\n", $currTweetIndex, date('c'));
             }
 
             // Delay
